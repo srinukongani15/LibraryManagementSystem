@@ -1,0 +1,135 @@
+import java.util.java;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Scanner;
+
+class Library {
+    private ArrayList<String> books;
+
+    public Library(ArrayList<String> listOfBooks) {
+        this.books = listOfBooks;
+    }
+
+    public void displayAvailableBooks() {
+        System.out.println("\n" + books.size() + " AVAILABLE BOOKS ARE: ");
+        for (String book : books) {
+            System.out.println(" ♦-- " + book);
+        }
+        System.out.println("\n");
+    }
+
+    public void borrowBook(String name, String bookName, ArrayList<HashMap<String, String>> track) {
+        if (!books.contains(bookName)) {
+            System.out.println(bookName + " BOOK IS NOT AVAILABLE EITHER TAKEN BY SOMEONE ELSE, WAIT UNTIL HE RETURNS.\n");
+        } else {
+            HashMap<String, String> entry = new HashMap<>();
+            entry.put(name, bookName);
+            track.add(entry);
+            System.out.println("BOOK ISSUED: THANK YOU KEEP IT WITH CARE AND RETURN ON TIME.\n");
+            books.remove(bookName);
+        }
+    }
+
+    public void returnBook(String bookName) {
+        System.out.println("BOOK RETURNED: THANK YOU! \n");
+        books.add(bookName);
+    }
+
+    public void donateBook(String bookName) {
+        System.out.println("BOOK DONATED: THANK YOU VERY MUCH, HAVE A GREAT DAY AHEAD.\n");
+        books.add(bookName);
+    }
+}
+
+class Student {
+    private Scanner scanner;
+
+    public Student(Scanner scanner) {
+        this.scanner = scanner;
+    }
+
+    public String requestBook() {
+        System.out.println("So, you want to borrow a book!");
+        System.out.print("Enter name of the book you want to borrow: ");
+        return scanner.nextLine();
+    }
+
+    public String returnBook() {
+        System.out.println("So, you want to return a book!");
+        System.out.print("Enter your name: ");
+        String name = scanner.nextLine();
+        System.out.print("Enter name of the book you want to return: ");
+        String bookName = scanner.nextLine();
+        return bookName;
+    }
+
+    public String donateBook() {
+        System.out.println("Okay! You want to donate a book!");
+        System.out.print("Enter name of the book you want to donate: ");
+        return scanner.nextLine();
+    }
+}
+
+public class LibraryManagementSystem {
+    public static void main(String[] args) {
+        ArrayList<String> bookList = new ArrayList<>();
+        bookList.add("vistas");
+        bookList.add("invention");
+        bookList.add("rich&poor");
+        bookList.add("indian");
+        bookList.add("macroeconomics");
+        bookList.add("microeconomics");
+
+        Library delhiLibrary = new Library(bookList);
+        Scanner scanner = new Scanner(System.in);
+        Student student = new Student(scanner);
+        ArrayList<HashMap<String, String>> track = new ArrayList<>();
+
+        System.out.println("\t\t\t\t\t\t\t♦♦♦♦♦♦♦ WELCOME TO THE DELHI LIBRARY ♦♦♦♦♦♦♦\n");
+        System.out.println("CHOOSE WHAT YOU WANT TO DO:-\n1. Listing all books\n2. Borrow books\n3. Return books\n4. Donate books\n5. Track books\n6. Exit the library\n");
+
+        while (true) {
+            try {
+                System.out.print("Enter your choice: ");
+                int usrResponse = Integer.parseInt(scanner.nextLine());
+
+                switch (usrResponse) {
+                    case 1: // Listing
+                        delhiLibrary.displayAvailableBooks();
+                        break;
+                    case 2: // Borrow
+                        System.out.print("Enter your name: ");
+                        String name = scanner.nextLine();
+                        delhiLibrary.borrowBook(name, student.requestBook(), track);
+                        break;
+                    case 3: // Return
+                        delhiLibrary.returnBook(student.returnBook());
+                        break;
+                    case 4: // Donate
+                        delhiLibrary.donateBook(student.donateBook());
+                        break;
+                    case 5: // Track
+                        if (track.isEmpty()) {
+                            System.out.println("NO BOOKS ARE ISSUED! \n");
+                        } else {
+                            for (HashMap<String, String> entry : track) {
+                                for (String holder : entry.keySet()) {
+                                    String book = entry.get(holder);
+                                    System.out.println(book + " book is taken/issued by " + holder + ".");
+                                }
+                            }
+                        }
+                        break;
+                    case 6: // Exit
+                        System.out.println("THANK YOU! \n");
+                        scanner.close();
+                        System.exit(0);
+                    default:
+                        System.out.println("INVALID INPUT! \n");
+                }
+            } catch (Exception e) { // Catch errors
+                System.out.println(e + " ---> INVALID INPUT! \n");
+            }
+        }
+    }
+}
